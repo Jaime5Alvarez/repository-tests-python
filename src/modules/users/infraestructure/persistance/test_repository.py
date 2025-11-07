@@ -5,37 +5,13 @@ from src.modules.users.infraestructure.persistance.repository import (
     SqlAlchemyUserRepository,
 )
 from src.modules.users.domain.entities import User as UserEntity
-from src.modules.shared.database.sql_alchemy_db import DatabaseSessionManager
-from src.modules.shared.database.sql_alchemy_db import Base
 from sqlalchemy.ext.asyncio import AsyncSession
-
-
-@pytest_asyncio.fixture(scope="function")
-async def db_session():
-    session_manager = DatabaseSessionManager(
-        "postgresql+asyncpg://postgres:postgres@localhost:5432/postgres",
-        {"echo": False},
-    )
-
-    async with session_manager.session() as session:
-        yield session
-
-async def db_setup(db_session: AsyncSession):
-    await db_session.run_sync(
-        lambda sync_session: Base.metadata.drop_all(sync_session.get_bind())
-    )
-    await db_session.run_sync(
-        lambda sync_session: Base.metadata.create_all(sync_session.get_bind())
-    )
 
 
 @pytest_asyncio.fixture
 async def repository(db_session: AsyncSession):
-    await db_setup(db_session)
-
-    yield SqlAlchemyUserRepository(db_session)
-
-    await db_session.commit()
+    """Provides a repository instance with a clean database session"""
+    return SqlAlchemyUserRepository(db_session)
 
 
 class TestSqlAlchemyUserRepository:
