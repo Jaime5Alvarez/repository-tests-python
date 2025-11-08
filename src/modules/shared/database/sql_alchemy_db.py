@@ -63,6 +63,7 @@ class DatabaseSessionManager:
 sessionmanager = DatabaseSessionManager(DATABASE_URL, {"echo": False})
 
 
-async def get_db_session():
-    async with sessionmanager.session() as session:
+@contextlib.asynccontextmanager
+async def get_db_session(manager: DatabaseSessionManager = sessionmanager):
+    async with manager.session() as session:
         yield session
