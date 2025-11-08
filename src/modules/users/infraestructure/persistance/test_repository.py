@@ -9,14 +9,14 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 
 @pytest_asyncio.fixture
-async def repository(db_session: AsyncSession):
+async def repository(db_session: AsyncSession) -> SqlAlchemyUserRepository:
     """Provides a repository instance with a clean database session"""
     return SqlAlchemyUserRepository(db_session)
 
 
 class TestSqlAlchemyUserRepository:
     @pytest.mark.asyncio
-    async def test_create_user(self, repository):
+    async def test_create_user(self, repository: SqlAlchemyUserRepository):
         """Test creating a new user"""
         # Arrange
         user_data = UserEntity(
@@ -36,7 +36,7 @@ class TestSqlAlchemyUserRepository:
         assert created_user.is_admin is False
 
     @pytest.mark.asyncio
-    async def test_create_admin_user(self, repository):
+    async def test_create_admin_user(self, repository: SqlAlchemyUserRepository):
         """Test creating an admin user"""
         # Arrange
         admin_data = UserEntity(
@@ -51,7 +51,7 @@ class TestSqlAlchemyUserRepository:
         assert created_admin.is_admin is True
 
     @pytest.mark.asyncio
-    async def test_get_by_id_existing_user(self, repository):
+    async def test_get_by_id_existing_user(self, repository: SqlAlchemyUserRepository):
         """Test retrieving an existing user by ID"""
         # Arrange - Create a user first
         user_data = UserEntity(
@@ -70,7 +70,9 @@ class TestSqlAlchemyUserRepository:
         assert retrieved_user.is_admin is False
 
     @pytest.mark.asyncio
-    async def test_get_by_id_non_existing_user(self, repository):
+    async def test_get_by_id_non_existing_user(
+        self, repository: SqlAlchemyUserRepository
+    ):
         """Test retrieving a non-existing user by ID"""
         # Act
         retrieved_user = await repository.get_by_id(999)
@@ -79,7 +81,7 @@ class TestSqlAlchemyUserRepository:
         assert retrieved_user is None
 
     @pytest.mark.asyncio
-    async def test_create_multiple_users(self, repository):
+    async def test_create_multiple_users(self, repository: SqlAlchemyUserRepository):
         """Test creating multiple users"""
         # Arrange
         users_data = [
@@ -102,7 +104,7 @@ class TestSqlAlchemyUserRepository:
         assert created_users[2].email == "user3@example.com"
 
     @pytest.mark.asyncio
-    async def test_get_all_created_users(self, repository):
+    async def test_get_all_created_users(self, repository: SqlAlchemyUserRepository):
         """Test that we can retrieve all created users"""
         # Arrange - Create multiple users
         user1 = await repository.create(

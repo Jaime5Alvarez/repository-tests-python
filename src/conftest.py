@@ -2,6 +2,7 @@ import pytest_asyncio
 from src.modules.shared.database.sql_alchemy_db import DatabaseSessionManager, Base
 from testcontainers.postgres import PostgresContainer
 
+
 @pytest_asyncio.fixture(scope="session")
 async def database_url():
     """Provides a PostgreSQL container for the entire test session"""
@@ -9,9 +10,7 @@ async def database_url():
     container = PostgresContainer("postgres:18-alpine")
     container.start()
 
-    yield (
-        container.get_connection_url(driver="asyncpg")
-    )
+    yield (container.get_connection_url(driver="asyncpg"))
     # after all tests
     container.stop()
 
