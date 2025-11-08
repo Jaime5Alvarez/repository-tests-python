@@ -60,10 +60,11 @@ class DatabaseSessionManager:
             await session.close()
 
 
-sessionmanager = DatabaseSessionManager(DATABASE_URL, {"echo": False})
+def factory_session_manager(database_url: str) -> DatabaseSessionManager:
+    return DatabaseSessionManager(database_url, {"echo": False})
 
 
-@contextlib.asynccontextmanager
-async def get_db_session(manager: DatabaseSessionManager = sessionmanager):
-    async with manager.session() as session:
+# For FastAPI Depends() - without decorator
+async def get_db_session(database_url: str) -> AsyncIterator[AsyncSession]:
+    async with factory_session_manager(database_url).session() as session:
         yield session

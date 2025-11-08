@@ -1,8 +1,7 @@
 import pytest_asyncio
 from src.modules.shared.database.sql_alchemy_db import (
-    DatabaseSessionManager,
     Base,
-    get_db_session,
+    factory_session_manager,
 )
 from testcontainers.postgres import PostgresContainer
 
@@ -23,12 +22,7 @@ async def database_url():
 @pytest_asyncio.fixture(scope="function")
 async def db_session(database_url):
     """Provides a clean database session for each test"""
-    session_manager = DatabaseSessionManager(
-        database_url,
-        {"echo": False},
-    )
-
-    async with get_db_session(session_manager) as session:
+    async with factory_session_manager(database_url).session() as session:
         # Clean database before test
         await session.run_sync(
             lambda sync_session: Base.metadata.drop_all(sync_session.get_bind())
