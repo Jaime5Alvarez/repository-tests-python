@@ -1,12 +1,12 @@
 from typing import override
-from src.modules.users.domain.interfaces import UserRepository
+from src.modules.users.domain.interfaces import IUserRepository
 from src.modules.users.domain.entities import User as UserEntity
 from src.modules.users.infraestructure.persistance.models import User as UserModel
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
 
-class SqlAlchemyUserRepository(UserRepository):
+class SqlAlchemyUserRepository(IUserRepository):
     def __init__(self, session: AsyncSession):
         self.session = session
 
