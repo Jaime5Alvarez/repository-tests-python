@@ -9,11 +9,8 @@ async def database_url():
     container = PostgresContainer("postgres:18-alpine")
     container.start()
 
-    # Replace the connection URL to use asyncpg instead of psycopg2, only if needed
     yield (
-        container.get_connection_url()
-        .replace("postgresql://", "postgresql+asyncpg://")
-        .replace("postgresql+psycopg2://", "postgresql+asyncpg://")
+        container.get_connection_url(driver="asyncpg")
     )
     # after all tests
     container.stop()
