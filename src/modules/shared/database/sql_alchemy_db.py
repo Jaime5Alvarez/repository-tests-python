@@ -60,6 +60,7 @@ class DatabaseSessionManager:
             await session.close()
 
 
+# For scripts and tests
 sessionmanager = DatabaseSessionManager(DATABASE_URL, {"echo": False})
 
 
