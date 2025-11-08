@@ -1,3 +1,6 @@
+from sqlalchemy.ext.asyncio.session import AsyncSession
+
+
 import contextlib
 from collections.abc import AsyncIterator
 from sqlalchemy.ext.asyncio import (
@@ -23,7 +26,7 @@ class DatabaseSessionManager:
         if engine_kwargs is None:
             engine_kwargs = {}
         self._engine = create_async_engine(host, **engine_kwargs)
-        self._sessionmaker = async_sessionmaker(autocommit=False, bind=self._engine)
+        self._sessionmaker = async_sessionmaker[AsyncSession](autocommit=False, bind=self._engine)
 
     async def close(self):
         if self._engine is None:
