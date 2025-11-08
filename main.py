@@ -6,6 +6,7 @@ from src.modules.users.infraestructure.persistance.repository import (
 from src.modules.shared.database.sql_alchemy_db import (
     DatabaseSessionManager,
     Base,
+    get_db_session,
 )
 from src.modules.users.domain.entities import User as UserEntity
 from testcontainers.postgres import PostgresContainer
@@ -18,7 +19,7 @@ async def main():
     database_url = container.get_connection_url(driver="asyncpg")
     session_manager = DatabaseSessionManager(database_url, {"echo": False})
 
-    async with session_manager.session() as db_session:
+    async with get_db_session(session_manager) as db_session:
         # Create tables
         await db_session.run_sync(
             lambda sync_session: Base.metadata.create_all(sync_session.get_bind())
