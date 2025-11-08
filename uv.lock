@@ -426,9 +426,9 @@ requires-dist = [
     { name = "pydantic", specifier = ">=2.12.4" },
     { name = "pytest", specifier = ">=8.4.2" },
     { name = "pytest-asyncio", specifier = ">=0.24.0" },
-    { name = "ruff", specifier = ">=0.14.4" },
-    { name = "sqlalchemy", specifier = ">=2.0.44" },
-    { name = "testcontainers", extras = ["postgres"], specifier = ">=4.13.2" },
+    { name = "ruff", specifier = "==0.14.4" },
+    { name = "sqlalchemy", specifier = "==2.0.44" },
+    { name = "testcontainers", extras = ["postgres"], specifier = "==4.13.2" },
 ]
 
 [[package]]
