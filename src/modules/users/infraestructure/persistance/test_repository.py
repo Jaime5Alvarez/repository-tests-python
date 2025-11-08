@@ -123,3 +123,55 @@ class TestSqlAlchemyUserRepository:
         assert retrieved_user1.name == "Alice"
         assert retrieved_user2 is not None
         assert retrieved_user2.name == "Bob"
+
+    @pytest.mark.asyncio
+    async def test_get_all_users(self, repository: SqlAlchemyUserRepository):
+        """Test that we can retrieve all users"""
+        # Arrange - Create multiple users
+        await repository.create(
+            UserEntity(id=0, name="Alice", email="alice@example.com", is_admin=False)
+        )
+        await repository.create(
+            UserEntity(id=0, name="Bob", email="bob@example.com", is_admin=True)
+        )
+        users = await repository.get_all()
+        assert len(users) == 2
+        assert users[0].name == "Alice"
+        assert users[1].name == "Bob"
+
+    @pytest.mark.asyncio
+    async def test_update_user(self, repository: SqlAlchemyUserRepository):
+        """Test that we can update a user"""
+        # Arrange - Create a user
+        user = await repository.create(
+            UserEntity(id=0, name="Alice", email="alice@example.com", is_admin=False)
+        )
+        # Act
+        await repository.update(
+            UserEntity(
+                id=user.id,
+                name="Alice Updated",
+                email="alice.updated@example.com",
+                is_admin=True,
+            )
+        )
+
+        updated_user = await repository.get_by_id(user.id)
+        assert updated_user is not None
+        assert updated_user.name == "Alice Updated"
+        assert updated_user.email == "alice.updated@example.com"
+        assert updated_user.is_admin is True
+
+    @pytest.mark.asyncio
+    async def test_update_non_existing_user(self, repository: SqlAlchemyUserRepository):
+        """Test that we can update a non-existing user"""
+        # Act
+        with pytest.raises(ValueError):
+            await repository.update(
+                UserEntity(
+                    id=999,
+                    name="Alice Updated",
+                    email="alice.updated@example.com",
+                    is_admin=True,
+                )
+            )

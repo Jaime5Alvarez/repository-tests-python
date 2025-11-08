@@ -9,5 +9,13 @@ class UserRepository(ABC):
         pass
 
     @abstractmethod
+    async def update(self, user: User) -> User:
+        pass
+
+    @abstractmethod
     async def get_by_id(self, id: int) -> User | None:
+        pass
+
+    @abstractmethod
+    async def get_all(self) -> list[User]:
         pass

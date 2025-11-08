@@ -17,17 +17,13 @@ async def main():
 
     database_url = container.get_connection_url(driver="asyncpg")
     session_manager = DatabaseSessionManager(database_url, {"echo": False})
-    
+
     async with session_manager.session() as db_session:
-        # Clean database before each execution
-        await db_session.run_sync(
-            lambda sync_session: Base.metadata.drop_all(sync_session.get_bind())
-        )
         # Create tables
         await db_session.run_sync(
             lambda sync_session: Base.metadata.create_all(sync_session.get_bind())
         )
-        
+
         # Use repository
         repository = SqlAlchemyUserRepository(db_session)
         await repository.create(
